@@ -2,9 +2,8 @@ name: Update Mahakal M3U
 
 on:
   schedule:
-    # Runs every 6 hours to refresh tokens. Adjust as needed.
-    - cron: '0 */6 * * *'
-  workflow_dispatch: # Allows you to run it manually by clicking "Run workflow"
+    - cron: '0 */4 * * *' # Runs every 4 hours to keep the dynamic YouTube token fresh
+  workflow_dispatch:
 
 jobs:
   update-list:
@@ -21,22 +20,17 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          pip install requests beautifulsoup4
+          pip install yt-dlp
 
       - name: Run Scraper Script
-        env:
-          # Add your Netscape cookie text or cookie string into GitHub Secrets as MAHAKAL_COOKIES
-          COOKIE_DATA: ${{ secrets.MAHAKAL_COOKIES }}
         run: |
           python update.py
+
       - name: Commit and Push Changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          # Ensures the file exists so git add never throws a fatal pathspec error
-          touch mahakal.m3u 
+          touch mahakal.m3u
           git add mahakal.m3u
-          git commit -m "Auto-updated Ujjain Mahakal Live stream for OTT Navigator" || exit 0
+          git commit -m "Auto-updated Mahakal YouTube Live stream for OTT Navigator" || exit 0
           git push
-
-    
