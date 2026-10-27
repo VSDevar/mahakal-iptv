@@ -1,35 +1,39 @@
-name: Update Mahakal M3U Playlist
+name: Update Mahakal M3U
 
 on:
   schedule:
-    - cron: '0 */3 * * *'
-  workflow_dispatch: 
+    # Runs every 6 hours to refresh tokens. Adjust as needed.
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Allows you to run it manually by clicking "Run workflow"
 
 jobs:
   update-list:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        # Pulls the absolute freshest daily patch of yt-dlp to stay ahead of bot errors
-        pip install --no-cache-dir --upgrade https://github.com
+      - name: Install Dependencies
+        run: |
+          pip install requests beautifulsoup4
 
-    - name: Run Update Script
-      run: python update_playlist.py
+      - name: Run Scraper Script
+        env:
+          # Add your Netscape cookie text or cookie string into GitHub Secrets as MAHAKAL_COOKIES
+          COOKIE_DATA: ${{ secrets.MAHAKAL_COOKIES }}
+        run: |
+          python update.py
 
-    - name: Commit and Push M3U File
-      run: |
-        git config --global user.name "GitHub Action"
-        git config --global user.email "actions@github.com"
-        git add mahakal.m3u
-        git diff --quiet && git diff --staged --quiet || (git commit -m "OTT Navigator playlist updated" && git push)
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add mahakal.m3u
+          git commit -m "Auto-updated Ujjain Mahakal Live stream for OTT Navigator" || exit 0
+          git push
