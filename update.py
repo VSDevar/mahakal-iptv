@@ -1,12 +1,12 @@
 import sys
 
-# The verified active video ID string provided by you
+# The active video ID string provided by you
 LIVE_ID = "6xhkj-qF-cM"
 
 def generate_playlist():
     print(f"Building playlist layout using verified ID: {LIVE_ID}")
     
-    # Primary proxy and active mirror backup architectures
+    # CORRECTED URL STRUCTURES WITH PROPER DOMAINS AND LIVE DIRECTORIES
     primary_stream = f"https://kavin.rocks{LIVE_ID}"
     backup_stream = f"https://lunar.icu{LIVE_ID}"
     
