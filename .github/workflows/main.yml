@@ -8,9 +8,13 @@ on:
 jobs:
   update-list:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Grants the workflow permission to overwrite and push files
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,10 +24,10 @@ jobs:
       - name: Run Scraper Script
         run: python update.py
 
-      - name: Commit and Push Changes
+      - name: Force Commit and Push Changes
         run: |
-          git config --local user.email "actions@github.com"
-          git config --local user.name "GitHub Actions"
-          git add *.m3u
-          git commit -m "Force fix M3U proxy endpoints link structural formatting" || exit 0
-          git push
+          git config --local user.email "github-actions[bot]@://github.com"
+          git config --local user.name "github-actions[bot]"
+          git add --all
+          git commit -m "Automated URL structural fix" || echo "No changes to commit"
+          git push origin HEAD:${{ github.ref }}
