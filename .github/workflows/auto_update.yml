@@ -29,11 +29,14 @@ jobs:
           COOKIE_DATA: ${{ secrets.MAHAKAL_COOKIES }}
         run: |
           python update.py
-
       - name: Commit and Push Changes
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
+          # Ensures the file exists so git add never throws a fatal pathspec error
+          touch mahakal.m3u 
           git add mahakal.m3u
           git commit -m "Auto-updated Ujjain Mahakal Live stream for OTT Navigator" || exit 0
           git push
+
+    
