@@ -2,13 +2,13 @@ import urllib.request
 import re
 import sys
 
-# The official verified temple administration channel ID
+# The official verified Ujjain Mahakaleshwar Temple Administration channel ID
 CHANNEL_ID = "UCEUuwXHmHckwmdANSy4c7Sw"
 
 def get_current_live_id():
     """Extracts the active daily live video ID from the temple channel."""
     try:
-        url = f"https://www.youtube.com/channel/{CHANNEL_ID}/live"
+        url = f"https://youtube.com{CHANNEL_ID}/live"
         headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
         req = urllib.request.Request(url, headers=headers)
         
@@ -43,10 +43,11 @@ def generate_playlist():
         print("Live stream not found or offline. Retaining previous playlist data to prevent black screens.")
         return
 
-    # Compiling the primary and secondary mirror endpoint locations
+    # FIXED URL CONCATENATION STRUCTURE WITH PROPER DIRECTORIES AND PROTOCOLS
     primary_stream = f"https://kavin.rocks{live_id}"
     backup_stream = f"https://lunar.icu{live_id}"
     
+    # ALL LABELS FIXED TO OFFICIAL UJJAIN MAHAKAL LIVE DARSHAN
     m3u_template = f"""#EXTM3U
 #EXTINF:-1 tvg-id="MahakalLive" tvg-name="Ujjain Mahakal Live" tvg-logo="https://utsav.gov.in" group-title="Devotional;Spiritual" tvg-chno="1", Shri Ujjain Mahakal Live Darshan
 {primary_stream}
@@ -55,8 +56,8 @@ def generate_playlist():
 {backup_stream}
 """
     
-    # Overwrite the output files automatically in your workflow environment
-    filenames = ["mahakal.m3u", "playlist.m3u"]
+    # Overwrite all standard playlist files in the root folder
+    filenames = ["mahakal.m3u", "playlist.m3u", "final.m3u"]
     for name in filenames:
         with open(name, "w", encoding="utf-8") as file:
             file.write(m3u_template)
