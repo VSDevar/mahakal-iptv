@@ -2,8 +2,8 @@ name: Update Mahakal M3U
 
 on:
   schedule:
-    # Runs automatically every single day at 00:00 UTC (5:30 AM IST)
-    - cron: '0 0 * * *'
+    # 6:30 PM UTC converts exactly to 12:00 Midnight IST
+    - cron: '30 18 * * *'
   workflow_dispatch: # Keeps the manual button active just in case you want to test it
 
 jobs:
@@ -29,5 +29,5 @@ jobs:
           git config --local user.name "GitHub Actions"
           touch mahakal.m3u
           git add mahakal.m3u
-          git commit -m "Scheduled daily automation sync for OTT Navigator" || exit 0
+          git commit -m "Scheduled daily automation sync for OTT Navigator at Midnight IST" || exit 0
           git push
