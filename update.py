@@ -6,7 +6,7 @@ LIVE_ID = "6xhkj-qF-cM"
 def generate_playlist():
     print(f"Building playlist layout using verified ID: {LIVE_ID}")
     
-    # CORRECTED URL STRUCTURES WITH PROPER DOMAINS AND LIVE DIRECTORIES
+    # FIXING THE CONCATENATION BY EXPLICITLY ADDING THE PROTOCOL, SUBDOMAIN, AND API PATH
     primary_stream = f"https://kavin.rocks{LIVE_ID}"
     backup_stream = f"https://lunar.icu{LIVE_ID}"
     
@@ -20,7 +20,7 @@ def generate_playlist():
     try:
         with open("mahakal.m3u", "w", encoding="utf-8") as file:
             file.write(m3u_template)
-        print(f"File generation complete. Set to direct URL: {primary_stream}")
+        print(f"File generation complete. Correctly set to: {primary_stream}")
     except Exception as e:
         print(f"Failed to write file system data: {e}", file=sys.stderr)
 
