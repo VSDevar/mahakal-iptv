@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Change this to the exact web page URL hosting the Mahakal stream player
-TARGET_URL = "https://example-temple-stream-site.com" 
+TARGET_URL = "https://www.youtube.com/watch?v=nEJMTbW7N7Y" 
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
