@@ -7,12 +7,13 @@ YOUTUBE_CHANNEL_URL = "https://youtube.com"
 
 def get_live_m3u8(channel_url):
     try:
-        # Bypasses bot wall by telling YouTube it is an Android app/TV client, forcing an HTTPS protocol sort
+        # Added --cookies flag to bypass YouTube datacenter blocks using your browser session
         result = subprocess.run(
             [
                 "yt-dlp", 
                 "-g", 
                 "-f", "best", 
+                "--cookies", "youtube-cookies.txt",
                 "--extractor-args", "youtube:player-client=android,web_embedded",
                 "-S", "proto:https",
                 f"{channel_url}/live"
@@ -24,7 +25,6 @@ def get_live_m3u8(channel_url):
         )
         return result.stdout.strip()
     except Exception as e:
-        # Prints out the exact system error text to read in the GitHub logs
         print(f"Error extracting stream: {e}")
         if hasattr(e, 'stderr') and e.stderr:
             print(f"Details: {e.stderr}")
@@ -39,7 +39,7 @@ def generate_m3u(stream_url):
     
     with open("mahakal.m3u", "w", encoding="utf-8") as file:
         file.write(m3u_content)
-    print("M3U playlist successfully generated.")
+    print("M3U playlist generated successfully using authentication.")
 
 if __name__ == "__main__":
     live_url = get_live_m3u8(YOUTUBE_CHANNEL_URL)
@@ -47,5 +47,4 @@ if __name__ == "__main__":
         generate_m3u(live_url)
     else:
         print("Failed to fetch active stream URL.")
-        # Tells GitHub Actions that the script actually failed so it highlights the error
         exit(1) 
