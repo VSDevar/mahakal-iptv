@@ -2,6 +2,7 @@ name: Update Mahakal M3U
 
 on:
   schedule:
+    # 6:30 PM UTC converts exactly to 12:00 Midnight IST
     - cron: '30 18 * * *'
   workflow_dispatch: 
 
@@ -9,7 +10,7 @@ jobs:
   update-list:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Grants the workflow permission to overwrite and push files
+      contents: write # Forces GitHub to allow overwrites to file structure data
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -29,5 +30,5 @@ jobs:
           git config --local user.email "github-actions[bot]@://github.com"
           git config --local user.name "github-actions[bot]"
           git add --all
-          git commit -m "Automated URL structural fix" || echo "No changes to commit"
+          git commit -m "Automated daily Ujjain Mahakal Live link synchronization" || echo "No files modified"
           git push origin HEAD:${{ github.ref }}
