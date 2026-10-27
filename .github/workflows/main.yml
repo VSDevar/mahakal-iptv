@@ -2,8 +2,9 @@ name: Update Mahakal M3U
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
+    # Runs automatically every single day at 00:00 UTC (5:30 AM IST)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Keeps the manual button active just in case you want to test it
 
 jobs:
   update-list:
@@ -18,10 +19,6 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
-        run: |
-          pip install requests
-
       - name: Run Scraper Script
         run: |
           python update.py
@@ -32,5 +29,5 @@ jobs:
           git config --local user.name "GitHub Actions"
           touch mahakal.m3u
           git add mahakal.m3u
-          git commit -m "Auto-updated Mahakal M3U8 payload" || exit 0
+          git commit -m "Scheduled daily automation sync for OTT Navigator" || exit 0
           git push
