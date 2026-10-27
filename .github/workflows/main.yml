@@ -24,6 +24,6 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add mahakal.m3u
-          git commit -m "Daily automation sync for OTT Navigator" || exit 0
+          git add *.m3u
+          git commit -m "Force fix M3U proxy endpoints link structural formatting" || exit 0
           git push
