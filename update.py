@@ -1,38 +1,22 @@
+import subprocess
 import os
-import re
-import requests
-from bs4 import BeautifulSoup
 
-# Change this to the exact web page URL hosting the Mahakal stream player
-TARGET_URL = "https://www.youtube.com/watch?v=nEJMTbW7N7Y" 
+# Your specific Krishna Gyan Sagar YouTube Live stream link
+YOUTUBE_URL = "https://www.youtube.com/watch?v=nEJMTbW7N7Y"
 
-headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Cookie": os.getenv("COOKIE_DATA", "")
-}
-
-def extract_stream_url():
+def extract_youtube_m3u8(url):
     try:
-        response = requests.get(TARGET_URL, headers=headers, timeout=20)
-        if response.status_code != 200:
-            print(f"Website returned status code: {response.status_code}")
-            return None
-            
-        html = response.text
+        # Run yt-dlp via system terminal execution to safely catch the direct stream asset URL
+        command = ["yt-dlp", "-g", url]
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         
-        # Look for explicit streaming playlist extensions (.m3u8)
-        m3u8_links = re.findall(r'(https?://[^\s"\']+\.m3u8[^\s"\']*)', html)
-        if m3u8_links:
-            return m3u8_links[0]
-            
-        soup = BeautifulSoup(html, 'html.parser')
-        source_tag = soup.find("source", src=True)
-        if source_tag and ".m3u8" in source_tag["src"]:
-            return source_tag["src"]
-            
+        # Clean and isolate the extracted stream URL string
+        stream_url = result.stdout.strip()
+        if ".m3u8" in stream_url or "manifest" in stream_url:
+            return stream_url
         return None
     except Exception as e:
-        print(f"Scraping error: {e}")
+        print(f"Error extracting YouTube live stream link: {e}")
         return None
 
 def write_ott_navigator_m3u(stream_url):
@@ -42,15 +26,15 @@ def write_ott_navigator_m3u(stream_url):
 """
     with open("mahakal.m3u", "w", encoding="utf-8") as file:
         file.write(m3u_template)
-    print("Success: mahakal.m3u generated.")
+    print("Success: mahakal.m3u generated with YouTube link.")
 
 if __name__ == "__main__":
-    url = extract_stream_url()
+    url = extract_youtube_m3u8(YOUTUBE_URL)
     
     if not url:
-        print("Warning: Live token link not found on target webpage.")
-        # Fallback to an empty file or a placeholder so the Git commit doesn't crash
-        # Replace the URL below with a backup link if you have one
-        url = "https://placeholder-stream-if-failed.m3u8" 
+        print("Warning: YouTube extraction failed. Using stable fallback container.")
+        # Fallback container URL if YouTube parsing is blocked or temporarily offline
+        url = "https://placeholder-stream-if-failed.m3u8"
         
     write_ott_navigator_m3u(url)
+
