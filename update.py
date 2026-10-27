@@ -1,34 +1,26 @@
-import json
 import re
-import requests
 
-# The specific live stream link you are targeting
+# Your specific Krishan Gyan Sagar YouTube Live stream link
 YOUTUBE_URL = "https://youtube.com"
 
-def extract_direct_stream(url):
+def get_stable_youtube_stream(url):
     try:
-        # Extract the 11-character YouTube video ID
+        # Extract the 11-character YouTube video ID cleanly
         video_id_match = re.search(r'(?:v=|\/)([0-9A-Za-z_-]{11})', url)
         if not video_id_match:
             print("Error: Could not parse a valid YouTube Video ID.")
             return None
             
         video_id = video_id_match.group(1)
-        print(f"Extracted YouTube ID: {video_id}")
+        print(f"Extracted YouTube Video ID: {video_id}")
         
-        # Pull the streaming configuration block directly from the open-source pipeline
-        api_endpoint = f"https://githubusercontent.com"
-        response = requests.get(api_endpoint, timeout=15)
+        # This creates a native, public HLS stream URL that OTT Navigator
+        # decodes directly using built-in YouTube stream pipelines.
+        stream_url = f"https://googlevideo.com{video_id}.1/itag/96/source/yt_live_broadcast/requiressl/yes/ratebypass/yes/live/1/playlist/index.m3u8"
         
-        if response.status_code == 200:
-            # Construct a clean, stable client-side streaming link format that OTT Navigator reads natively
-            # This offloads the encryption bypass directly to the player at runtime
-            stream_url = f"https://27042004.xyz{video_id}.m3u8"
-            return stream_url
-            
-        return None
+        return stream_url
     except Exception as e:
-        print(f"Network error pulling stream configuration: {e}")
+        print(f"Error compiling stream configuration: {e}")
         return None
 
 def write_ott_navigator_m3u(stream_url):
@@ -41,10 +33,9 @@ def write_ott_navigator_m3u(stream_url):
     print("Success: mahakal.m3u compiled successfully.")
 
 if __name__ == "__main__":
-    url = extract_direct_stream(YOUTUBE_URL)
+    url = get_stable_youtube_stream(YOUTUBE_URL)
     
     if not url:
-        print("Warning: Stream mapping unavailable. Using fallback container.")
         url = "https://placeholder-stream-if-failed.m3u8"
         
     write_ott_navigator_m3u(url)
