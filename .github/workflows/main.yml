@@ -2,33 +2,37 @@ name: Update Mahakal M3U
 
 on:
   schedule:
-    # 6:30 PM UTC converts exactly to 12:00 Midnight IST
-    - cron: '30 18 * * *'
-  workflow_dispatch: 
+    # Runs every 4 hours so tokens stay fresh
+    - cron: '0 */4 * * *'
+  workflow_dispatch: # Allows manual testing anytime
 
 jobs:
   update-list:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Forces GitHub to allow overwrites to file structure data
+      contents: write
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
-      - name: Run Scraper Script
-        run: python update.py
+      - name: Install yt-dlp
+        run: |
+          sudo curl -L https://github.com -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
 
-      - name: Force Commit and Push Changes
+      - name: Run Python M3U Generator
+        run: python update_m3u.py
+
+      - name: Commit and Push Changes
         run: |
           git config --local user.email "github-actions[bot]@://github.com"
           git config --local user.name "github-actions[bot]"
-          git add --all
-          git commit -m "Automated daily Ujjain Mahakal Live link synchronization" || echo "No files modified"
-          git push origin HEAD:${{ github.ref }}
+          git add mahakal.m3u playlist.m3u final.m3u
+          git commit -m "Automated Ujjain Mahakal Live link synchronization" || echo "No files modified"
+          git push
