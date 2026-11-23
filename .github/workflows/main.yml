@@ -2,8 +2,9 @@ name: Update Mahakal M3U
 
 on:
   schedule:
+    # Runs every 4 hours so stream tokens stay fresh
     - cron: '0 */4 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual testing anytime
 
 jobs:
   update-list:
@@ -26,7 +27,14 @@ jobs:
           sudo chmod a+rx /usr/local/bin/yt-dlp
 
       - name: Run Python M3U Generator
-        run: python update_m3u.py
+        run: |
+          PY_FILE=$(find . -maxdepth 2 -name "*.py" | head -n 1)
+          if [ -z "$PY_FILE" ]; then
+            echo "No Python (.py) file found in the repository!"
+            exit 1
+          fi
+          echo "Running $PY_FILE..."
+          python "$PY_FILE"
 
       - name: Commit and Push Changes
         run: |
