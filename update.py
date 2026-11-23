@@ -7,7 +7,6 @@ CHANNEL_URL = "https://youtube.com"
 def get_live_stream_data():
     """Extracts the active live video ID and direct .m3u8 stream URL using yt-dlp."""
     try:
-        # Fetch the direct HLS (.m3u8) stream URL and video ID
         cmd = [
             "yt-dlp",
             "--print", "id",
